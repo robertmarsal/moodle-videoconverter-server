@@ -11,7 +11,7 @@ $config = include __DIR__ . '/config/local.php';
 
 $token = filter_input(INPUT_POST, 'token');
 
-if(empty($token)) {
+if (empty($token)) {
     api_response(array(
         'status' => 'error',
         'message' => 'error:accessdenied',
@@ -23,7 +23,7 @@ $api_caller = new api_caller($token, $config);
 // validate the token before proceeding
 $token_validation = $api_caller->get('token.validate');
 
-if($token_validation->status !== 'success') {
+if ($token_validation->status !== 'success') {
     api_response(array(
         'status' => 'error',
         'message' => 'error:accessdenied'
@@ -33,7 +33,7 @@ if($token_validation->status !== 'success') {
 /* Deal with the upload */
 
 // Check upload exists (only file "video" is of interest)
-if(!isset($_FILES['video'])) {
+if (!isset($_FILES['video'])) {
     api_response(array(
         'status' => 'error',
         'message' => 'error:unknownfile',
@@ -42,7 +42,7 @@ if(!isset($_FILES['video'])) {
 
 // Check for errors
 if (!isset($_FILES['video']['error']) ||
-    is_array($_FILES['video']['error'])) {
+        is_array($_FILES['video']['error'])) {
     api_response(array(
         'status' => 'error',
         'message' => 'error:invalidparams',
@@ -50,7 +50,7 @@ if (!isset($_FILES['video']['error']) ||
 }
 
 // Check error value
-switch($_FILES['video']['error']) {
+switch ($_FILES['video']['error']) {
     case UPLOAD_ERR_OK:
         break;
     case UPLOAD_ERR_NO_FILE:
@@ -72,7 +72,7 @@ switch($_FILES['video']['error']) {
 }
 
 // Check the size
-if($_FILES['video']['size'] > $config['max_size']) {
+if ($_FILES['video']['size'] > $config['max_size']) {
     api_response(array(
         'status' => 'error',
         'message' => 'error:filetoobig',
@@ -81,19 +81,19 @@ if($_FILES['video']['size'] > $config['max_size']) {
 
 // Create the folder for the user
 $token_user = $api_caller->get('token.user');
-if($token_user->status !== 'success') {
+if ($token_user->status !== 'success') {
     api_response(array(
         'status' => 'error',
         'message' => 'error:useroftokennotfound'
     ));
 }
 
-$user_dir = $config['uploads_dir'] . '/' . $token_user->data->userid; 
-if(!is_dir($user_dir)) {
+$user_dir = $config['uploads_dir'] . '/' . $token_user->data->userid;
+if (!is_dir($user_dir)) {
     mkdir($user_dir);
 }
 
-if(!is_dir($user_dir)) {
+if (!is_dir($user_dir)) {
     api_response(array(
         'status' => 'error',
         'message' => 'error:failedcreatinguserdir'
@@ -109,7 +109,7 @@ $file = array(
 
 $file_record = $api_caller->post('file.create', $file);
 
-if($file_record->status !== 'success') {
+if ($file_record->status !== 'success') {
     // Something went wrong
     api_response(array(
         'status' => 'error',
@@ -118,9 +118,8 @@ if($file_record->status !== 'success') {
 }
 
 // Move the uploaded file
-if(!move_uploaded_file(
-    $_FILES['video']['tmp_name'],
-    $user_dir . '/' . $file['hash'])) {
+if (!move_uploaded_file(
+                $_FILES['video']['tmp_name'], $user_dir . '/' . $file['hash'])) {
     api_response(array(
         'status' => 'error',
         'message' => 'error:movingfile'
@@ -137,7 +136,7 @@ $queue_item = array(
 
 $enqueued = $api_caller->post('queue.new', $queue_item);
 
-if($enqueued->status !== 'success') {
+if ($enqueued->status !== 'success') {
     api_response(array(
         'status' => 'error',
         'message' => $enqueued->message,
@@ -146,7 +145,7 @@ if($enqueued->status !== 'success') {
 
 // Enqueue the video locally
 $local_queue_cache_file = $config['uploads_dir'] . '/.jobs';
-if(!is_file($local_queue_cache_file)) {
+if (!is_file($local_queue_cache_file)) {
     file_put_contents($local_queue_cache_file, json_encode(array()));
 }
 
@@ -167,8 +166,8 @@ api_response(array(
 
 /* Functions */
 
-function api_response(array $response) {
+function api_response(array $response)
+{
     echo json_encode($response);
     exit;
 }
-

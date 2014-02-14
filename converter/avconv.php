@@ -8,7 +8,7 @@
 require_once __DIR__ . '/converter.php';
 
 class avconv extends converter {
-    
+
     public function convert($origin, $target) {
         $output = null;
         $result = 1; // Assume fail

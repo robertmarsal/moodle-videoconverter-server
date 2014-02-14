@@ -13,23 +13,23 @@ $config = include_once __DIR__ . '/../config/local.php';
 // Name this worker
 $worker = uniqid();
 
-if(!register_worker($worker, $config)) {
-	// No more workers accepted
-	exit(0);
+if (!register_worker($worker, $config)) {
+    // No more workers accepted
+    exit(0);
 }
 
 $jobs_config_file = $config['uploads_dir'] . '/.jobs';
 
 // Read the job queue
 $job_queue = array();
-if(is_file($jobs_config_file)) {
+if (is_file($jobs_config_file)) {
     $job_queue = json_decode(file_get_contents($jobs_config_file), true);
 }
 
-if(empty($job_queue)) {
+if (empty($job_queue)) {
     // Remove worker
-	remove_worker($worker, $config);
-	exit(0);
+    remove_worker($worker, $config);
+    exit(0);
 }
 
 // Obtain the next file in queue
@@ -58,17 +58,17 @@ $result = $converter->convert($job->file, $converted_file_name);
 
 // Report conversion ok/failed
 $status = 'converted';
-if((int)$result !== 0) {
-	$status = 'failed';
+if ((int) $result !== 0) {
+    $status = 'failed';
 } else {
-	// Cleanup
-	unlink($job->file);
+    // Cleanup
+    unlink($job->file);
 }
 
 $api_caller->post('queue.status', array(
     'queue_item_id' => $job->queue_item_id,
-	'queue_status' => $status,
-	'time' => time(),
+    'queue_status' => $status,
+    'time' => time(),
 ));
 
 // Remove worker
@@ -76,42 +76,44 @@ remove_worker($worker, $config);
 
 /* Functions */
 
-function register_worker($worker, $config) {
+function register_worker($worker, $config)
+{
 
-	// Check worker max instances
-	$max_workers = $config['workers']['max_instances'];
-	$workers_config_file = $config['uploads_dir'] . '/.workers';
+    // Check worker max instances
+    $max_workers = $config['workers']['max_instances'];
+    $workers_config_file = $config['uploads_dir'] . '/.workers';
 
-    if(!is_file($workers_config_file)) {
-    	touch($workers_config_file);
-		file_put_contents($workers_config_file, json_encode(array(
-        	'instances' => array(),
-    	)));
-	}
+    if (!is_file($workers_config_file)) {
+        touch($workers_config_file);
+        file_put_contents($workers_config_file, json_encode(array(
+            'instances' => array(),
+        )));
+    }
 
-	$workers_config = json_decode(file_get_contents($workers_config_file), true);
+    $workers_config = json_decode(file_get_contents($workers_config_file), true);
 
-	if(count($workers_config['instances']) === (int) $max_workers) {
-	    // Already using max workers, do nothing 
-	    return false;
-	}
+    if (count($workers_config['instances']) === (int) $max_workers) {
+        // Already using max workers, do nothing
+        return false;
+    }
 
-	// Register the new worker
-	$workers_config['instances'][] = $worker;
-	file_put_contents($workers_config_file, json_encode($workers_config));
+    // Register the new worker
+    $workers_config['instances'][] = $worker;
+    file_put_contents($workers_config_file, json_encode($workers_config));
 
-	return true;
+    return true;
 }
 
-function remove_worker($worker, $config) {
-	$workers_config_file = $config['uploads_dir'] . '/.workers';
-	$workers_config = json_decode(file_get_contents($workers_config_file), true);
+function remove_worker($worker, $config)
+{
+    $workers_config_file = $config['uploads_dir'] . '/.workers';
+    $workers_config = json_decode(file_get_contents($workers_config_file), true);
 
-	foreach($workers_config['instances'] as $worker_item => $worker_instance) {
-		if($worker_instance === $worker) {
-			unset($workers_config['instances'][$worker_item]);
-		}
-	}
+    foreach ($workers_config['instances'] as $worker_item => $worker_instance) {
+        if ($worker_instance === $worker) {
+            unset($workers_config['instances'][$worker_item]);
+        }
+    }
 
-	file_put_contents($workers_config_file, json_encode($workers_config));
+    file_put_contents($workers_config_file, json_encode($workers_config));
 }

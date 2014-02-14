@@ -6,19 +6,19 @@
  */
 
 return array(
-   'api_entry' => 'http://10.40.32.1/rboloc/moodle/blocks/video_converter/lib/api.php',
-   'uploads_dir' => '/var/www/uploads',
-   'max_size' => 734003200, //bytes
-   'converters' => array(
-       'avconv' => array(
-           'binary_path' => '/usr/bin/avconv',
-           /**
-            * -y -> overwrite always
-            */ 
-           'params' => '-y',
-       ),
-   ),
-   'workers' => array(
-       'max_instances' => 3
-   ),
+    'api_entry' => 'http://10.40.32.1/rboloc/moodle/blocks/video_converter/lib/api.php',
+    'uploads_dir' => '/var/www/uploads',
+    'max_size' => 734003200, //bytes
+    'converters' => array(
+        'avconv' => array(
+            'binary_path' => '/usr/bin/avconv',
+            /**
+             * -y -> overwrite always
+             */
+            'params' => '-y',
+        ),
+    ),
+    'workers' => array(
+        'max_instances' => 3
+    ),
 );
