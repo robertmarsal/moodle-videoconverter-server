@@ -21,4 +21,8 @@ return array(
     'workers' => array(
         'max_instances' => 3
     ),
+    /**
+     * Seconds to keep the file after the first download
+     */
+    'expire_time' => 86400,
 );

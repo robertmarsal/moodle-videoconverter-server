@@ -75,7 +75,7 @@ if (!isset($expire_queue[$user_file])) {
         'token' => $token,
         'queue_item_id' => $queue_item_id,
         'file' => $user_file,
-        'timeexpires' => time() + 86400
+        'timeexpires' => time() + (int) $config['expire_time'],
     );
 }
 
