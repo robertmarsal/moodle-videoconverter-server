@@ -23,7 +23,6 @@ if (empty($expire_queue)) {
 
 // Obtain the next file in queue
 $expire = (object) array_shift($expire_queue);
-file_put_contents($expire_queue_file, json_encode($expire_queue));
 
 // Obtain the token
 $token = $expire->token;
@@ -35,10 +34,13 @@ if ($expire->timeexpires > time()) {
     exit;
 }
 
+// Remove from the local queue
+file_put_contents($expire_queue_file, json_encode($expire_queue));
+
 // Remove from queue
 $response = $api_caller->post('queue.remove', array(
     'queue_item_id' => $expire->queue_item_id,
-        ));
+));
 
 if ($response->status !== 'success') {
     // Something is wrong :(
