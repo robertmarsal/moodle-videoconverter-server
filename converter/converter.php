@@ -5,7 +5,7 @@
  * @copyright 2014 Servei de Recursos Educatius (http://www.sre.urv.cat)
  */
 
-abstract class converter {
+class converter {
 
     protected $binary;
     protected $params;
@@ -13,9 +13,16 @@ abstract class converter {
     public function __construct() {
         $config = include __DIR__ . '/../config/local.php';
 
-        $this->binary = $config['converters'][get_class($this)]['binary_path'];
-        $this->params = $config['converters'][get_class($this)]['params'];
+        $this->binary = $config['converter']['binary_path'];
+        $this->params = $config['converter']['params'];
     }
 
-    abstract function convert($origin, $target);
+    public function convert($origin, $target) {
+        $output = null;
+        $result = 1; // Assume fail
+
+        exec($this->binary . ' -i ' . $origin . ' ' . $this->params . ' ' . $target . ' > /dev/null', $output, $result);
+
+        return $result;
+    }
 }

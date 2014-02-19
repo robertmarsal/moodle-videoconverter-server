@@ -6,7 +6,7 @@
  */
 
 require_once __DIR__ . '/../api_caller.php';
-require_once __DIR__ . '/../converter/avconv.php';
+require_once __DIR__ . '/../converter/converter.php';
 
 $config = include_once __DIR__ . '/../config/local.php';
 
@@ -50,7 +50,7 @@ $api_caller->post('queue.status', array(
 ));
 
 // Convert it
-$converter = new avconv();
+$converter = new converter();
 $file_info = pathinfo($job->file);
 $converted_file_name = $file_info['dirname'] . '/' . $file_info['filename'] . '.mp4';
 

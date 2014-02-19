@@ -10,13 +10,11 @@ return array(
     'uploads_dir' => '/var/www/uploads',
     'max_size' => 734003200, //bytes
     'converters' => array(
-        'avconv' => array(
-            'binary_path' => '/usr/bin/avconv',
-            /**
-             * -y -> overwrite always
-             */
-            'params' => '-y',
-        ),
+        'binary_path' => '/usr/bin/avconv',
+        /**
+         * -y -> overwrite always
+         */
+        'params' => '-y',
     ),
     'workers' => array(
         'max_instances' => 3
