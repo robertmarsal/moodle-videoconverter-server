@@ -11,10 +11,12 @@ return array(
     'max_size' => 734003200, //bytes
     'converters' => array(
         'binary_path' => '/usr/bin/avconv',
+        'fallback_binary_path' => '/usr/bin/mencoder',
         /**
          * -y -> overwrite always
          */
         'params' => '-y',
+        'fallback_params' => '-ovc lavc -oac mp3lame -o',
     ),
     'workers' => array(
         'max_instances' => 3

@@ -54,7 +54,7 @@ $converter = new converter();
 $file_info = pathinfo($job->file);
 $converted_file_name = $file_info['dirname'] . '/' . $file_info['filename'] . '.mp4';
 
-$result = $converter->convert($job->file, $converted_file_name);
+$result = $converter->convert($job->file, $converted_file_name, true);
 
 // Report conversion ok/failed
 $status = 'converted';
